@@ -3,7 +3,7 @@ import { scaleFont } from "./mixins";
 const Font = {
   FAMILY: {
     REGULAR: "Ubuntu-Regular",
-    Light: "Ubuntu-Light",
+    LIGHT: "Ubuntu-Light",
     BOLD: "Ubuntu-Bold",
     MEDIUM: "Ubuntu-Medium",
   },

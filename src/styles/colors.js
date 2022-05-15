@@ -1,21 +1,22 @@
 const Colors = {
-  PRIMARY: "#318E46",
-  SECONDARY: "rgba(198,198,198,0.5)",
-  TERCEARY: "#6C6C6C",
-  GREY_45: "#737373",
-  WHITE: "#FFFFFF",
+  PRIMARY: "#ED1C24",
   BLACK: "#000000",
-  TRANSPARENT: "rgba(0,0,0,0)",
-  LIGHT_GREY: "rgba(200,200,200, .5)",
-  DIM_GREY: "#6C6C6C",
-  SILVER_SAND: "#C4C4C4",
-  BALCK_OPAQUE: 'rgba(0,0,0,.8)',
-  PRIMARY_OPAQUE: 'rgba(49,142, 70, .8)',
-  ACTIONS: {
-    SUCCESS: "#22bb33",
-    WARNING: "#f0ad4e",
-    ALERT: "#bb2124",
+  WHITE: "#FFFFFF",
+  GREY: {
+    DARK_GREY: "#A3A3A3",
+    TROLLEY_GREY: '#808080',
+    LIGHT_GREY: "rgba(200,200,200, .5)",
+    DIM_GREY: "#6C6C6C",
   },
+  LIGHT_RED: '#E9E9E9',
+  PANTONE: '#B4B4B4',
+  CARDINAL: '#06BD2E',
+  CHROME_YELLOW: '#FFA800',
+  NERO: '#242020',
+  ALIZARIM: 'RGBA(237,28,38,.6)',
+  CHARCOAL: '#484848',
+  TRANSPARENT: "rgba(0,0,0,0)",
+  BALCK_OPAQUE: 'rgba(0,0,0,.5)',
 };
 
 export default Colors;
