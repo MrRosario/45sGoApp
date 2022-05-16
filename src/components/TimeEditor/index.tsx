@@ -21,9 +21,9 @@ const TimerEditor: FC<Props> = ({ modalTitle, setIsModalVisible }) => {
       return;
     }
 
-    //CONFIRM
+    //CONFIRM....
+    console.log("Botao OK");
     closeModal();
-    ///......
   };
 
   return (

@@ -1,18 +1,38 @@
-import React, { useState, FC } from "react";
+import React, { useEffect, useState, FC } from "react";
 import { View, StyleSheet, Text } from "react-native";
 
 import { Font } from "../styles";
+import { getData } from "../services/localStorage";
+import { mildVital } from "../resources/constants";
 
 import { Card, Button, TimerEditor } from "../components";
 
 const Home: FC = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [modalTitle, setModalTitle] = useState("");
+  const [modalTitle, setModalTitle] = useState<string>("");
+  const [trainSetUp, setTrainSetup] = useState<any>(null);
 
-  const handlePressCard = (title: any) => {
+  const handlePressCard = (title: any): void => {
     setIsModalVisible(true);
     setModalTitle(title);
   };
+
+  const setData = async (): Promise<void> => {
+    const data = await getData();
+    const formattedData = data?.map((item) => {
+      return {
+        key: item[0],
+        values: JSON.parse(item[1]),
+      };
+    });
+    setTrainSetup(formattedData);
+  };
+
+  useEffect(() => {
+    setData();
+  }, []);
+
+  console.log("LocalData Home: ", trainSetUp);
 
   return (
     <>
@@ -22,30 +42,18 @@ const Home: FC = () => {
         </View>
 
         <View style={styles.content}>
-          <Card
-            type="prepare"
-            title="Preparar"
-            time="00:05"
-            callback={handlePressCard}
-          />
-          <Card
-            type="exercise"
-            title="Exercitar"
-            time="00:45"
-            callback={handlePressCard}
-          />
-          <Card
-            type="rest"
-            title="Descansar"
-            time="00:30"
-            callback={handlePressCard}
-          />
-          <Card
-            type="rounds"
-            title="Rodadas"
-            time="1"
-            callback={handlePressCard}
-          />
+          {trainSetUp?.map((item: any) => {
+            const { type, title, min, seg, rounds } = item.values;
+            return (
+              <Card
+                key={item.key}
+                type={type}
+                title={title}
+                time={type !== "rounds" ? `${seg}:${min}` : rounds}
+                callback={handlePressCard}
+              />
+            );
+          })}
         </View>
 
         <Button

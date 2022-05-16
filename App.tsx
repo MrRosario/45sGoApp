@@ -1,17 +1,28 @@
-import 'react-native-gesture-handler';
-import { useState } from 'react';
-import { StyleSheet, SafeAreaView, Platform, StatusBar, View, Pressable } from 'react-native';
+import "react-native-gesture-handler";
+import { useState } from "react";
+import {
+  StyleSheet,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  View,
+  Pressable,
+} from "react-native";
+
 import AppLoading from "expo-app-loading";
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Colors } from './src/styles';
+
+import { useStorage } from "./src/services/localStorage";
+import { Colors } from "./src/styles";
 import fontsSetup from "./src/setup/fonts";
-import HomeScreen from './src/ui/Home';
-import ExerciseScreen from './src/ui/Exercise';
-import { Sidebar, Header } from './src/components';
-import Menu from './assets/icons/menu_icon.svg';
-import Logo from './assets/icons/Logo.svg';
+import HomeScreen from "./src/ui/Home";
+import ExerciseScreen from "./src/ui/Exercise";
+import { Sidebar, Header } from "./src/components";
+
+import Menu from "./assets/icons/menu_icon.svg";
+import Logo from "./assets/icons/Logo.svg";
 
 const Drawer = createDrawerNavigator();
 
@@ -20,8 +31,9 @@ export default function App() {
   const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
 
-  async function loadFonts() {
+  async function setup() {
     await fontsSetup();
+    await useStorage();
   }
 
   function headerConfig() {
@@ -32,7 +44,7 @@ export default function App() {
     };
   }
 
-  function MenuButton({ navigation }:any) {
+  function MenuButton({ navigation }: any) {
     return (
       <Pressable
         style={{ paddingLeft: 16 }}
@@ -42,12 +54,12 @@ export default function App() {
       </Pressable>
     );
   }
-  function MenuLogo(){
-    return(
+  function MenuLogo() {
+    return (
       <View style={{ paddingRight: 16 }}>
         <Logo />
       </View>
-    )
+    );
   }
   function Root() {
     return (
@@ -63,8 +75,8 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={{
-            headerTitle: '',
-            headerTitleAlign: 'left',
+            headerTitle: "",
+            headerTitleAlign: "left",
             headerStyle: {
               backgroundColor: Colors.WHITE,
               height: 60,
@@ -78,7 +90,7 @@ export default function App() {
   if (!isReady) {
     return (
       <AppLoading
-        startAsync={loadFonts}
+        startAsync={setup}
         onFinish={() => setIsReady(true)}
         onError={console.warn}
       />
@@ -89,17 +101,17 @@ export default function App() {
     <SafeAreaView style={styles.safeArea}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name="Root"
-              component={Root}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              options={headerConfig("Guia alimentar")}
-              name="Exercise"
-              component={ExerciseScreen}
-            />
-          </Stack.Navigator>
+          <Stack.Screen
+            name="Root"
+            component={Root}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            options={headerConfig("Guia alimentar")}
+            name="Exercise"
+            component={ExerciseScreen}
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
   );
@@ -107,8 +119,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: "#fff",
   },
   safeArea: {
     flex: 1,
