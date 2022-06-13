@@ -1,13 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { mildVital } from '../resources/constants';
+import { fortyFiveSgo } from '../resources/constants';
 
-interface IValue {
-    min: string;
-    seg: string;
+interface IValues {
+    min?: string;
+    sec?: string;
+    rounds?: string
 }
 type storageType = {
     key: string;
-    value?: IValue;
+    values?: IValues;
 }
 const status: any = {
     success: 'success',
@@ -15,10 +16,10 @@ const status: any = {
 }
 
 const setDefaultData = async () => {
-    const preparePair = [mildVital.prepare, JSON.stringify({ min: '05', seg: '00', type: 'prepare', title: 'Preparar' })];
-    const exercisePair = [mildVital.exercise, JSON.stringify({ min: '45', seg: '00', type: 'exercise', title: 'Exercitar' })];
-    const restPair = [mildVital.rest, JSON.stringify({ min: '30', seg: '00', type: 'rest', title: 'Descansar' })];
-    const roundPair = [mildVital.rounds, JSON.stringify({ rounds: '1', type: 'rounds', title: 'Rodadas' })];
+    const preparePair = [fortyFiveSgo.prepare, JSON.stringify({ min: '00', sec: '05', type: 'prepare', title: 'Preparar' })];
+    const exercisePair = [fortyFiveSgo.exercise, JSON.stringify({ min: '00', sec: '45', type: 'exercise', title: 'Exercitar' })];
+    const restPair = [fortyFiveSgo.rest, JSON.stringify({ min: '00', sec: '30', type: 'rest', title: 'Descansar' })];
+    const roundPair = [fortyFiveSgo.rounds, JSON.stringify({ rounds: '1', type: 'rounds', title: 'Rodadas' })];
 
     try {
         await AsyncStorage.multiSet([preparePair, exercisePair, restPair, roundPair]);
@@ -31,10 +32,10 @@ const setDefaultData = async () => {
 export const getData = async () => {
     let values;
     const keys: string[] = [
-        mildVital.prepare,
-        mildVital.exercise,
-        mildVital.rest,
-        mildVital.rounds,
+        fortyFiveSgo.prepare,
+        fortyFiveSgo.exercise,
+        fortyFiveSgo.rest,
+        fortyFiveSgo.rounds,
     ];
     try {
         values = await AsyncStorage.multiGet(keys);
@@ -57,9 +58,9 @@ export const useStorage = async () => {
         return status.fail;
     }
 }
-export const storeData = async ({ key, value }: storageType) => {
+export const storeData = async ({ key, values }: storageType): Promise<any> => {
     try {
-        await AsyncStorage.setItem('@mildVital_' + key, JSON.stringify(value));
+        await AsyncStorage.setItem(key, JSON.stringify(values));
     }
     catch (err) {
         return status.fail;

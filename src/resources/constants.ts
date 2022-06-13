@@ -1,6 +1,6 @@
-export const mildVital = {
-    prepare: '@mildVital_Prepare',
-    exercise: '@mildVital_Exercise',
-    rest: '@mildVital_Rest',
-    rounds: '@mildVital_Rounds',
+export const fortyFiveSgo = {
+    prepare: '@45sGo_Prepare',
+    exercise: '@45sGo_Exercise',
+    rest: '@45sGo_Rest',
+    rounds: '@45sGo_Rounds',
 }

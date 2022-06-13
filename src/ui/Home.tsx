@@ -1,9 +1,9 @@
 import React, { useEffect, useState, FC } from "react";
 import { View, StyleSheet, Text } from "react-native";
 
-import { Font } from "../styles";
+import { Colors, Font } from "../styles";
 import { getData } from "../services/localStorage";
-import { mildVital } from "../resources/constants";
+import { splitString } from "../resources/commons";
 
 import { Card, Button, TimerEditor } from "../components";
 
@@ -11,13 +11,34 @@ const Home: FC = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [trainSetUp, setTrainSetup] = useState<any>(null);
+  const [min, setMin] = useState<string>("00");
+  const [sec, setSec] = useState<string>("00");
+  const [modalType, setModalType] = useState<string>("");
+  const [rounds, setRounds] = useState<string>("1");
 
-  const handlePressCard = (title: any): void => {
-    setIsModalVisible(true);
-    setModalTitle(title);
+  const setMinAndSec = (time: string) => {
+    const splitedNumber = splitString(time, ":", 2);
+    const formattedNumber = splitedNumber.map((value) => value);
+
+    setSec(formattedNumber[1]);
+    setMin(formattedNumber[0]);
   };
 
-  const setData = async (): Promise<void> => {
+  const handlePressCard = (title: string, type: string, time: string): void => {
+    setIsModalVisible(true);
+    setModalTitle(title);
+    setModalType(type);
+
+    setMinAndSec(time);
+    if (type !== "rounds") {
+      setMinAndSec(time);
+      return;
+    }
+
+    setRounds(time);
+  };
+
+  const fetchLocalStorage = async (): Promise<void> => {
     const data = await getData();
     const formattedData = data?.map((item) => {
       return {
@@ -29,10 +50,10 @@ const Home: FC = () => {
   };
 
   useEffect(() => {
-    setData();
-  }, []);
+    fetchLocalStorage();
+  }, [isModalVisible]);
 
-  console.log("LocalData Home: ", trainSetUp);
+  // console.log("trainSetUp: ", trainSetUp);
 
   return (
     <>
@@ -43,13 +64,13 @@ const Home: FC = () => {
 
         <View style={styles.content}>
           {trainSetUp?.map((item: any) => {
-            const { type, title, min, seg, rounds } = item.values;
+            const { type, title, min, sec, rounds } = item.values;
             return (
               <Card
                 key={item.key}
                 type={type}
                 title={title}
-                time={type !== "rounds" ? `${seg}:${min}` : rounds}
+                time={type !== "rounds" ? `${min}:${sec}` : rounds}
                 callback={handlePressCard}
               />
             );
@@ -65,6 +86,10 @@ const Home: FC = () => {
       {isModalVisible && (
         <TimerEditor
           modalTitle={modalTitle}
+          modalType={modalType}
+          rounds={rounds}
+          min={min}
+          sec={sec}
           setIsModalVisible={setIsModalVisible}
         />
       )}
@@ -76,6 +101,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: Colors.WHITE,
   },
   content: {
     flexDirection: "column",

@@ -15,7 +15,10 @@ type Props = {
 };
 const Card: FC<Props> = ({ type, title, time, callback }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={() => callback(title)}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => callback(title, type, time)}
+    >
       {type !== "rounds" ? <ClockIcon /> : <RoundIcon />}
 
       <View style={styles.content}>
