@@ -36,10 +36,11 @@ export default function App() {
     await useStorage();
   }
 
-  function headerConfig() {
+  function headerConfig(title: string) {
     return {
       headerBackTitleVisible: false,
       headerTitleAlign: "center",
+      headerTitle: title,
       headerTintColor: Colors.TERCEARY,
     };
   }
@@ -54,6 +55,7 @@ export default function App() {
       </Pressable>
     );
   }
+
   function MenuLogo() {
     return (
       <View style={{ paddingRight: 16 }}>
@@ -61,6 +63,7 @@ export default function App() {
       </View>
     );
   }
+
   function Root() {
     return (
       <Drawer.Navigator
@@ -72,7 +75,7 @@ export default function App() {
         })}
       >
         <Drawer.Screen
-          name="Home"
+          name="HomeScreen"
           component={HomeScreen}
           options={{
             headerTitle: "",
@@ -107,8 +110,8 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            options={headerConfig("Guia alimentar")}
-            name="Exercise"
+            options={headerConfig("")}
+            name="ExerciseScreen"
             component={ExerciseScreen}
           />
         </Stack.Navigator>

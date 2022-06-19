@@ -1,5 +1,6 @@
 import React, { useEffect, useState, FC } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; //TO BE REMOVED
 
 import { Colors, Font } from "../styles";
 import { getData } from "../services/localStorage";
@@ -7,7 +8,7 @@ import { splitString } from "../resources/commons";
 
 import { Card, Button, TimerEditor } from "../components";
 
-const Home: FC = () => {
+const Home: FC = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [trainSetUp, setTrainSetup] = useState<any>(null);
@@ -80,8 +81,12 @@ const Home: FC = () => {
         <Button
           size="large"
           title="INICIAR"
-          callBack={() => console.log("INICIAR Exercicio")}
+          callBack={() => navigation.navigate("ExerciseScreen")}
         />
+        {/* TO BE REMOVED */}
+        <TouchableOpacity onPress={async () => await AsyncStorage.clear()}>
+          <Text>Clean</Text>
+        </TouchableOpacity>
       </View>
       {isModalVisible && (
         <TimerEditor
