@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,9 +7,10 @@ import {
   StatusBar,
   View,
   Pressable,
+  LogBox,
 } from "react-native";
 
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -25,16 +26,15 @@ import Menu from "./assets/icons/menu_icon.svg";
 import Logo from "./assets/icons/Logo.svg";
 
 const Drawer = createDrawerNavigator();
+LogBox.ignoreLogs([
+  "ViewPropTypes will be removed",
+  "ColorPropType will be removed",
+]);
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
-
-  async function setup() {
-    await fontsSetup();
-    await useStorage();
-  }
 
   function headerConfig(title: string) {
     return {
@@ -90,32 +90,50 @@ export default function App() {
     );
   }
 
-  if (!isReady) {
-    return (
-      <AppLoading
-        startAsync={setup}
-        onFinish={() => setIsReady(true)}
-        onError={console.warn}
-      />
-    );
+  async function setup() {
+    await fontsSetup();
+    await useStorage();
   }
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+        await setup();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (isReady) await SplashScreen.hideAsync();
+  }, [isReady]);
+
+  if (!isReady) return null;
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Root"
-            component={Root}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            options={headerConfig("")}
-            name="ExerciseScreen"
-            component={ExerciseScreen}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name="Root"
+              component={Root}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              options={headerConfig("")}
+              name="ExerciseScreen"
+              component={ExerciseScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
     </SafeAreaView>
   );
 }

@@ -7,6 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "publish": "expo publish --release-channel 45sgo-dev",
     "eject": "expo eject"
   },
   "dependencies": {
@@ -29,7 +30,10 @@
     "react-native-screens": "~3.11.1",
     "react-native-svg": "12.3.0",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-web": "0.17.7"
+    "react-native-web": "0.17.7",
+    "expo-updates": "~0.13.2",
+    "expo-dev-client": "~1.0.0",
+    "expo-splash-screen": "~0.15.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

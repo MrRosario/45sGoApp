@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "runtimeVersion": "2.718",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

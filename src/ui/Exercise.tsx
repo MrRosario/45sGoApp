@@ -1,15 +1,33 @@
 import React, { FC, useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Alert } from "react-native";
 import CircularProgressBar from "../components/CircularProgressBar";
 import { PogressBarMode } from "../components/CircularProgressBar/types";
 import { Colors, Font } from "../styles";
 import { Button } from "../components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fortyFiveSgo } from "../resources/constants";
+import { getData } from "../services/localStorage";
+import { useProgress } from "../hooks/useProgress";
+import { useCountdown } from "../hooks/useCountDown";
 
-const Exercise: FC = () => {
-  const [paused, setPaused] = useState(false);
-  const [rounds, setRounds] = useState(0);
+type LocalDataType = {
+  min: string;
+  sec: string;
+  title: string;
+  type: string;
+};
+const Exercise: FC = ({ navigation }: any) => {
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [rounds, setRounds] = useState<string>("");
+  const [prepare, setPrepare] = useState<LocalDataType | undefined>();
+  const [exercise, setExercise] = useState<LocalDataType | undefined>();
+  const [rest, setRest] = useState<LocalDataType | undefined>();
+  const [isProgressFinished, setIsProgressFinished] = useState<boolean>(false);
+  const [localStorage, setLocalStorage] = useState<any>();
+  // const progress = useProgress();
+  const MIN = 1;
+  const SEC = 10;
+  const [minutes, seconds] = useCountdown(MIN, SEC, isPaused);
 
   const RenderMode = ({ title, time }: any) => (
     <View style={styles.content}>
@@ -17,42 +35,78 @@ const Exercise: FC = () => {
       <Text style={styles.label}>{time}</Text>
     </View>
   );
-  const fetchRounds = async () => {
-    try {
-      const result: any = await AsyncStorage.getItem(fortyFiveSgo.rounds);
 
-      if (result !== null) {
-        console.log("result?.rounds: ", result.rounds);
-        setRounds(result?.rounds);
-      }
-
-      console.log("result: ", result);
-    } catch (err) {
-      console.warn(err);
-    }
+  const fetchLocalStorage = async (): Promise<any> => {
+    const data = await getData();
+    const formattedData: any = data?.map((item: any) => {
+      return {
+        key: item[0],
+        values: JSON.parse(item[1]),
+      };
+    });
+    setData(formattedData);
+    setLocalStorage(formattedData);
   };
 
-  useEffect(() => {
-    fetchRounds();
-  });
+  const setData = (formattedData: any) => {
+    formattedData?.forEach((item: any) => {
+      if (item.key === fortyFiveSgo.rounds) setRounds(item?.values?.rounds);
+      if (item.key === fortyFiveSgo.prepare) setPrepare(item?.values);
+      if (item.key === fortyFiveSgo.exercise) setExercise(item?.values);
+      if (item.key === fortyFiveSgo.rest) setRest(item?.values);
+    });
+  };
 
-  console.log("rounds: ", rounds);
+  const createTwoButtonAlert = () =>
+    Alert.alert("Tem certeza de que deseja interromper o treino?", "", [
+      {
+        text: "Cancelar",
+        onPress: () => setIsPaused(false),
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        onPress: () => navigation.goBack(),
+      },
+    ]);
+
+  useEffect(() => {
+    fetchLocalStorage();
+  }, []);
+
+  // console.log("localStorage: ", localStorage);
+
+  console.log(`minutes: ${minutes}, seconds: ${seconds}`);
+
   return (
     <View style={styles.container}>
-      <CircularProgressBar duration={15000} mode={PogressBarMode["Exercise"]} />
+      <CircularProgressBar
+        minutes={minutes}
+        seconds={seconds}
+        mode={PogressBarMode["prepare"]}
+      />
       <View>
-        <RenderMode title="Rodadas" time={rounds} />
-        {/* <RenderMode title="Tempo Total" time="01:00" /> */}
+        <View>
+          <RenderMode title="Rodadas" time={rounds} />
+          <RenderMode
+            title="Tempo Total"
+            time={`${exercise?.min}:${exercise?.sec}`}
+          />
+        </View>
+
         <View style={styles.buttonsWrapper}>
           <Button
             size="small"
-            title={!paused ? "Pausar" : "Continuar"}
-            callBack={() => setPaused(!paused)}
+            title={!isPaused ? "Pausar" : "Continuar"}
+            callBack={() => setIsPaused(!isPaused)}
           />
           <Button
             size="small"
             title="Cancelar"
-            callBack={() => console.log("Cancelar")}
+            callBack={() => {
+              setIsPaused(true);
+              createTwoButtonAlert();
+            }}
             outline
           />
         </View>

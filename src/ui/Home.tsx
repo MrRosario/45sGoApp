@@ -39,9 +39,9 @@ const Home: FC = ({ navigation }: any) => {
     setRounds(time);
   };
 
-  const fetchLocalStorage = async (): Promise<void> => {
+  const fetchLocalStorage = async (): Promise<any> => {
     const data = await getData();
-    const formattedData = data?.map((item) => {
+    const formattedData = data?.map((item: any) => {
       return {
         key: item[0],
         values: JSON.parse(item[1]),

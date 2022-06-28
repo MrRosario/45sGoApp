@@ -1,10 +1,11 @@
 export type Props = {
-    duration: number;
+    minutes: any,
+    seconds: any;
     mode: any;
 }
 
 export enum PogressBarMode {
-    Exercise = 'Exercise',
-    Rest = 'Rest',
-    Prepare = 'Prepare'
+    prepare = 'prepare',
+    exercise = 'exercise',
+    rest = 'rest',
 }

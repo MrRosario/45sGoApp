@@ -7,3 +7,5 @@ export const convertToInteger = (value: string): number =>
 
 export const isNotEmpty = (str: string, value: number): boolean =>
     str.length > value;
+
+export const minAndSecToMilliseconds = (time: number) => (time * 1000);
