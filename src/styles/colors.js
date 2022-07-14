@@ -3,6 +3,7 @@ const Colors = {
   BLACK: "#000000",
   WHITE: "#FFFFFF",
   GREY: {
+    _: '#AAAAAA',
     DARK_GREY: "#A3A3A3",
     TROLLEY_GREY: '#808080',
     LIGHT_GREY: "rgba(200,200,200, .5)",

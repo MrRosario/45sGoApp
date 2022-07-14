@@ -29,6 +29,8 @@ const Font = {
     SIZE_60: scaleFont(60),
     SIZE_65: scaleFont(65),
     SIZE_70: scaleFont(70),
+    SIZE_80: scaleFont(80),
+    SIZE_85: scaleFont(85),
     SIZE_90: scaleFont(90),
   },
   LINE_HEIGHT: {

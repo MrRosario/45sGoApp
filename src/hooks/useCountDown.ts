@@ -1,25 +1,44 @@
 import { useEffect, useState } from 'react';
 
-const STATUS = {
-    STARTED: 'Started',
-    STOPPED: 'Stopped',
-}
+const useCountdown = (
+    min: number,
+    sec: number,
+    isPaused: boolean,
 
-const useCountdown = (min: number, sec: number, isPaused: boolean) => {
+    setIsPrepareDone: any,
+    setIsExerciseDone: any,
+    setIsRestDone: any,
+
+    isPrepareDone: boolean,
+    isExerciseDone: boolean,
+    isRestDone: boolean,
+) => {
 
     const [minutes, setMinutes] = useState<any>(min);
     const [seconds, setSeconds] = useState<any>(sec);
 
-    useEffect(() => {
-        let interval = setInterval(() => {
+    const handleTimer = () => {
+        setIsPrepareDone(true)
+        setMinutes(min);
+        setSeconds(sec);
+    }
+
+    const runTimer = () => {
+        const interval = setInterval(() => {
 
             if (isPaused) {
                 clearInterval(interval);
                 return;
             }
 
+            if (minutes === 0 && seconds === 0) {
+                handleTimer();
+                return;
+            }
+
             if (seconds > 0) {
                 setSeconds(seconds - 1);
+                // setIsProgressFinished(false);
                 return;
             }
 
@@ -29,8 +48,15 @@ const useCountdown = (min: number, sec: number, isPaused: boolean) => {
             }
 
             setMinutes(minutes - 1);
+            // setIsProgressFinished(false);
             setSeconds(59);
         }, 1000);
+        return interval
+    };
+
+    useEffect(() => {
+        const interval = runTimer();
+
         return () => clearInterval(interval);
     });
 

@@ -4,11 +4,10 @@ import CircularProgressBar from "../components/CircularProgressBar";
 import { PogressBarMode } from "../components/CircularProgressBar/types";
 import { Colors, Font } from "../styles";
 import { Button } from "../components";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fortyFiveSgo } from "../resources/constants";
 import { getData } from "../services/localStorage";
-import { useProgress } from "../hooks/useProgress";
 import { useCountdown } from "../hooks/useCountDown";
+import { convertToInteger } from "../resources/commons";
 
 type LocalDataType = {
   min: string;
@@ -22,12 +21,51 @@ const Exercise: FC = ({ navigation }: any) => {
   const [prepare, setPrepare] = useState<LocalDataType | undefined>();
   const [exercise, setExercise] = useState<LocalDataType | undefined>();
   const [rest, setRest] = useState<LocalDataType | undefined>();
-  const [isProgressFinished, setIsProgressFinished] = useState<boolean>(false);
+
+  const [isPrepareDone, setIsPrepareDone] = useState(false);
+  const [isExerciseDone, setIsExerciseDone] = useState(true);
+  const [isRestDone, setIsRestDone] = useState(false);
+
   const [localStorage, setLocalStorage] = useState<any>();
-  // const progress = useProgress();
-  const MIN = 1;
-  const SEC = 10;
-  const [minutes, seconds] = useCountdown(MIN, SEC, isPaused);
+
+  const renderMin = (type: string) => {
+    const result = localStorage?.find((el: any) => el.key === type);
+    return convertToInteger(result?.values?.min);
+  };
+
+  const renderSec = (type: string) => {
+    const result = localStorage?.find((el: any) => el.key === type);
+    return convertToInteger(result?.values?.sec);
+  };
+
+  const [min, setMin] = useState(() => {
+    if (isExerciseDone) return renderMin(fortyFiveSgo.exercise);
+
+    if (isRestDone) return renderMin(fortyFiveSgo.rest);
+
+    return renderMin(fortyFiveSgo.prepare);
+  });
+
+  const [secon, setSecon] = useState(() => {
+    if (isExerciseDone) return renderSec(fortyFiveSgo.exercise);
+
+    if (isRestDone) return renderSec(fortyFiveSgo.rest);
+
+    return renderSec(fortyFiveSgo.prepare);
+  });
+
+  const [minutes, seconds] = useCountdown(
+    min,
+    secon,
+    isPaused,
+    setIsPrepareDone,
+    setIsExerciseDone,
+    setIsRestDone,
+
+    isPrepareDone,
+    isExerciseDone,
+    isRestDone
+  );
 
   const RenderMode = ({ title, time }: any) => (
     <View style={styles.content}>
@@ -57,7 +95,7 @@ const Exercise: FC = ({ navigation }: any) => {
     });
   };
 
-  const createTwoButtonAlert = () =>
+  const alertDialog = () =>
     Alert.alert("Tem certeza de que deseja interromper o treino?", "", [
       {
         text: "Cancelar",
@@ -74,9 +112,13 @@ const Exercise: FC = ({ navigation }: any) => {
     fetchLocalStorage();
   }, []);
 
-  // console.log("localStorage: ", localStorage);
+  console.log("localStorage: ", localStorage);
+  // console.log(
+  //   `min: ${renderMin(fortyFiveSgo.prepare)}
+  //    seg: ${renderSec(fortyFiveSgo.prepare)}`
+  // );
 
-  console.log(`minutes: ${minutes}, seconds: ${seconds}`);
+  if (localStorage === undefined) return null;
 
   return (
     <View style={styles.container}>
@@ -97,17 +139,18 @@ const Exercise: FC = ({ navigation }: any) => {
         <View style={styles.buttonsWrapper}>
           <Button
             size="small"
-            title={!isPaused ? "Pausar" : "Continuar"}
-            callBack={() => setIsPaused(!isPaused)}
-          />
-          <Button
-            size="small"
             title="Cancelar"
             callBack={() => {
               setIsPaused(true);
-              createTwoButtonAlert();
+              alertDialog();
             }}
             outline
+          />
+          <Button
+            size="small"
+            isPaused={isPaused}
+            title={!isPaused ? "Pausar" : "Continuar"}
+            callBack={() => setIsPaused(!isPaused)}
           />
         </View>
       </View>

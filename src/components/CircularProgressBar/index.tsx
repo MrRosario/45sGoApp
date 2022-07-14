@@ -36,7 +36,7 @@ const CircularProgressBar: FC<Props> = ({ minutes, seconds, mode }) => {
         CURRENT_SEC={CURRENT_SEC}
         COLOR={COLOR}
       />
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 15 }}>
         <Text style={[styles.label, { color: COLOR }]}>Exercitar</Text>
       </View>
     </View>
@@ -65,7 +65,7 @@ const PADDING: number = 25;
 const styles = StyleSheet.create({
   progressBarWrapper: {
     alignItems: "center",
-    marginBottom: 50,
+    marginBottom: 30,
   },
   circleShape: {
     width: CIRCLE_SIZE,
@@ -80,14 +80,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     ...CENTER_ITEM,
   },
-
   timerWrapper: {
     flexDirection: "row",
   },
   timer: {
     fontFamily: Font.FAMILY.BOLD,
     fontWeight: Font.WEIGHT.BOLD,
-    fontSize: Font.SIZE.SIZE_70,
+    fontSize: Font.SIZE.SIZE_85,
     color: Colors.BLACK,
   },
   label: {

@@ -9,13 +9,14 @@ export const useProgress = (duration: number = 0) => {
             setDurationWatch(durationWatch + 1000);
         }, 1000);
 
-        console.log("durationWatch: ", durationWatch);
-
         if (durationWatch === duration) {
             clearInterval(interval);
             setIsProgressFinished(true);
             console.log("Progress Bar Completed");
         }
+
+        console.log("durationWatch: ", durationWatch);
+
         return () => clearInterval(interval);
     }, [durationWatch]);
 
